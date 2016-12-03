@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Movies List</title>
+
+    <link href="bootstrap.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="carousel-3d.css">
+    <link href="custom.css" rel="stylesheet" />
+    <script src="jquery.min.js"></script>
+    <script src="angular.js"></script>
+    <script src="angular-sanitize.js"></script>
+    <script src="angular-swipe.js"></script>
+    <script src="carousel-3d.js"></script>
+    <script src="angular-filter.min.js"></script>
+    <script src="app.js"></script>
+    <script src="moviesCtrl.js"></script>
+    
+</head>
+<body ng-app="movies">
+    <div  ng-controller="moviesCtrl as mc">
+        <div class="slider-box">
+          <div class="col-sm-2"></div>
+              <div class="col-sm-8 slider-panel">
+                <carousel3d ng-model="mc.movies"
+                            options="mc.options"
+                            on-selected-click="mc.selectedClick(index)"
+                            on-slide-change="mc.slideChanged(index)"
+                            on-last-slide="mc.lastSlide(index)"
+                            on-before-change="mc.beforeChange(index)">
+                    <carousel3d-slide ng-repeat="slide in mc.movies">
+                        <figure>
+                            <img ng-src="{{slide.imageUrl}}" alt="" />
+                            <figcaption ng-bind="slide.title"></figcaption>
+                        </figure>
+                    </carousel3d-slide>
+                </carousel3d>
+            </div>
+        </div>
+        <div class="container custom-container">
+            <div class="col-md-12 top-gap-20">
+                <input type="text" placeholder="Type to search" ng-model="mc.search" class="form-control" />
+            </div>
+            <div class="col-md-12 top-gap-20" ng-repeat="(key, value) in mc.movies | groupBy : 'category'">
+                <label>{{key}} ({{(value | filter:mc.search).length}})</label>
+                <div class="well" ng-repeat="movie in value | filter:mc.search">
+                    <div star-rating rating-value="movie.rating" max="mc.maxRating" on-rating-selected="mc.getSelectedRating(movie)"></div>
+                    <a href="http://www.imdb.com/find?q={{movie.title}}" target="_blank">{{movie.title}}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
